@@ -1,0 +1,243 @@
+/* VimAscii - Catppuccin Mocha dark theme */
+
+:host {
+  all: initial;
+  font-family: 'Menlo', 'Monaco', 'Courier New', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #cdd6f4;
+  background: #1e1e2e;
+}
+
+.vimascii-root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2147483647;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  grid-template-columns: 1fr;
+  background: #1e1e2e;
+  font-family: 'Menlo', 'Monaco', 'Courier New', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #cdd6f4;
+  overflow: hidden;
+}
+
+/* Buffer area (scrollable content) */
+.vim-buffer {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  cursor: text;
+}
+
+.vim-buffer-viewport {
+  flex: 1;
+  overflow: hidden;
+}
+
+.vim-line {
+  display: flex;
+  white-space: pre;
+  height: 1.4em;
+  min-height: 1.4em;
+}
+
+.vim-gutter {
+  display: inline-block;
+  width: 5ch;
+  min-width: 5ch;
+  text-align: right;
+  padding-right: 1ch;
+  color: #585b70;
+  background: #181825;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.vim-line-content {
+  flex: 1;
+  padding-left: 1ch;
+  overflow: hidden;
+}
+
+/* Tilde lines (empty buffer) */
+.vim-tilde {
+  color: #585b70;
+}
+
+/* Content type styling */
+.line-heading { color: #f38ba8; font-weight: bold; }
+.line-heading-1 { color: #f38ba8; }
+.line-heading-2 { color: #fab387; }
+.line-heading-3 { color: #f9e2af; }
+.line-heading-4 { color: #a6e3a1; }
+.line-heading-5 { color: #89b4fa; }
+.line-heading-6 { color: #cba6f7; }
+
+.line-link {
+  color: #89b4fa;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.line-link:hover {
+  color: #b4d0fb;
+}
+
+.line-separator {
+  color: #45475a;
+}
+
+.line-code {
+  color: #a6e3a1;
+  background: #181825;
+}
+
+.line-ascii-art {
+  color: #a6e3a1;
+  letter-spacing: 0;
+}
+
+.line-list-marker {
+  color: #f9e2af;
+}
+
+/* Cursor */
+.vim-cursor {
+  background: #f5e0dc;
+  color: #1e1e2e;
+}
+
+/* Visual mode selection */
+.vim-visual-select {
+  background: #45475a;
+}
+
+/* Search highlight */
+.vim-search-match {
+  background: #f9e2af;
+  color: #1e1e2e;
+}
+.vim-search-current {
+  background: #fab387;
+  color: #1e1e2e;
+}
+
+/* Status line */
+.vim-statusline {
+  display: flex;
+  align-items: center;
+  background: #313244;
+  color: #cdd6f4;
+  height: 1.4em;
+  padding: 0 1ch;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.vim-statusline-mode {
+  font-weight: bold;
+  padding: 0 1ch;
+  margin-right: 1ch;
+}
+
+.vim-statusline-mode-normal { background: #89b4fa; color: #1e1e2e; }
+.vim-statusline-mode-visual { background: #cba6f7; color: #1e1e2e; }
+.vim-statusline-mode-command { background: #f9e2af; color: #1e1e2e; }
+.vim-statusline-mode-hint { background: #a6e3a1; color: #1e1e2e; }
+
+.vim-statusline-file {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vim-statusline-pos {
+  margin-left: 2ch;
+  color: #a6adc8;
+}
+
+.vim-statusline-scroll {
+  margin-left: 2ch;
+  width: 5ch;
+  text-align: right;
+  color: #a6adc8;
+}
+
+/* Command line */
+.vim-commandline {
+  display: flex;
+  align-items: center;
+  background: #1e1e2e;
+  color: #cdd6f4;
+  height: 1.4em;
+  padding: 0 1ch;
+  white-space: nowrap;
+}
+
+.vim-commandline-prefix {
+  color: #f9e2af;
+  margin-right: 0;
+}
+
+.vim-commandline-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #cdd6f4;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+  margin: 0;
+}
+
+.vim-commandline-message {
+  color: #a6adc8;
+}
+
+.vim-commandline-error {
+  color: #f38ba8;
+}
+
+/* Hint labels */
+.vim-hint-label {
+  position: absolute;
+  background: #f9e2af;
+  color: #1e1e2e;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 0 3px;
+  z-index: 10;
+  border-radius: 2px;
+}
+
+/* Loading screen */
+.vim-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #a6adc8;
+}
+
+.vim-loading-spinner {
+  margin-bottom: 1em;
+  animation: vim-spin 1s linear infinite;
+}
+
+@keyframes vim-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.vim-loading-text {
+  font-size: 16px;
+}

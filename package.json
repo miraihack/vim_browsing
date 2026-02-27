@@ -1,0 +1,15 @@
+{
+  "name": "vimascii",
+  "version": "1.0.0",
+  "description": "Convert web pages to ASCII art with a Vim UI overlay",
+  "private": true,
+  "scripts": {
+    "build": "node build.js",
+    "build:chrome": "node build.js --chrome",
+    "build:firefox": "node build.js --firefox",
+    "watch": "node build.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.0"
+  }
+}
