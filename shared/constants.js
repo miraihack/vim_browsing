@@ -1,5 +1,8 @@
-// ASCII brightness ramp (dark → light)
-export const ASCII_RAMP = ' .:-=+*#%@';
+// ASCII brightness ramp (dark → light, 70-char Paul Bourke ramp)
+export const ASCII_RAMP = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+
+// Color quantization bit shift (each channel >> 3 = 32 levels, 32^3 = 32,768 colors)
+export const COLOR_QUANT_SHIFT = 3;
 
 // Character aspect ratio correction (monospace chars are ~2x taller than wide)
 export const CHAR_ASPECT_RATIO = 0.5;

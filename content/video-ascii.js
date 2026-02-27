@@ -1,4 +1,4 @@
-import { ASCII_RAMP, CHAR_ASPECT_RATIO, VIDEO_TARGET_FPS } from '../shared/constants.js';
+import { ASCII_RAMP, CHAR_ASPECT_RATIO, VIDEO_TARGET_FPS, COLOR_QUANT_SHIFT } from '../shared/constants.js';
 
 /**
  * Real-time video → ASCII art player.
@@ -21,6 +21,12 @@ export class VideoAsciiPlayer {
     this._cols = 0;
     this._rows = 0;
     this._running = false;
+
+    // Pre-compute HTML-escaped ramp characters
+    const escapeMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' };
+    this._escapedRamp = Array.from(ASCII_RAMP, ch => escapeMap[ch] || ch);
+    this._rampMax = ASCII_RAMP.length - 1;
+    this._quantShift = COLOR_QUANT_SHIFT;
   }
 
   /**
@@ -87,34 +93,60 @@ export class VideoAsciiPlayer {
     try {
       this.ctx.drawImage(this.video, 0, 0, this._cols, this._rows);
       const imageData = this.ctx.getImageData(0, 0, this._cols, this._rows);
-      this.preEl.textContent = this._pixelsToAscii(imageData.data, this._cols, this._rows);
+      this.preEl.innerHTML = this._pixelsToColoredHtml(imageData.data, this._cols, this._rows);
     } catch {
-      // DRM content or tainted canvas
+      // DRM content or tainted canvas (use textContent for plain text)
       this.preEl.textContent = '\n\n  [DRM protected content - cannot capture video frames]';
     }
   }
 
   /**
-   * Convert raw RGBA pixel data to an ASCII string.
+   * Convert raw RGBA pixel data to colored HTML spans.
+   * Groups consecutive characters with the same quantized color
+   * into single <span> elements to minimize DOM node count.
    */
-  _pixelsToAscii(pixels, width, height) {
-    const ramp = ASCII_RAMP;
-    const rampMax = ramp.length - 1;
-    let frame = '';
+  _pixelsToColoredHtml(pixels, width, height) {
+    const ramp = this._escapedRamp;
+    const rampMax = this._rampMax;
+    const shift = this._quantShift;
+    const parts = [];
 
     for (let y = 0; y < height; y++) {
+      let spanChars = '';
+      let prevR = -1, prevG = -1, prevB = -1;
+
       for (let x = 0; x < width; x++) {
         const idx = (y * width + x) * 4;
         const r = pixels[idx];
         const g = pixels[idx + 1];
         const b = pixels[idx + 2];
         const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-        frame += ramp[Math.floor((lum / 255) * rampMax)];
+        const ch = ramp[Math.floor((lum / 255) * rampMax)];
+
+        // Quantize color for grouping
+        const qr = r >> shift;
+        const qg = g >> shift;
+        const qb = b >> shift;
+
+        if (qr !== prevR || qg !== prevG || qb !== prevB) {
+          // Flush previous span
+          if (spanChars) {
+            parts.push(`<span style="color:rgb(${prevR << shift},${prevG << shift},${prevB << shift})">${spanChars}</span>`);
+          }
+          spanChars = ch;
+          prevR = qr; prevG = qg; prevB = qb;
+        } else {
+          spanChars += ch;
+        }
       }
-      if (y < height - 1) frame += '\n';
+      // Flush last span of the line
+      if (spanChars) {
+        parts.push(`<span style="color:rgb(${prevR << shift},${prevG << shift},${prevB << shift})">${spanChars}</span>`);
+      }
+      if (y < height - 1) parts.push('\n');
     }
 
-    return frame;
+    return parts.join('');
   }
 
   /**
