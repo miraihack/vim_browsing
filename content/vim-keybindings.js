@@ -172,7 +172,7 @@ export class VimKeybindings {
       case 'Enter': {
         const curLine = ov.lines[row];
         if (curLine?.type === 'video-placeholder' && curLine.videoElement) {
-          this._enterVideoMode(curLine.videoElement);
+          this.enterVideoMode(curLine.videoElement);
           return true;
         }
         this._followLinkOnCursorLine();
@@ -339,24 +339,15 @@ export class VimKeybindings {
   _enterCommandMode(prefix) {
     this.mode = MODE.COMMAND;
     this._cmdPrefix = prefix;
-    this._cmdBuffer = '';
     this.overlay.getStatusline()?.setMode(MODE.COMMAND);
-    this._updateCommandDisplay();
+    this.overlay.getCommandline()?.activate(prefix);
   }
 
   _exitCommandMode() {
     this.mode = MODE.NORMAL;
     this._cmdPrefix = '';
-    this._cmdBuffer = '';
     this.overlay.getStatusline()?.setMode(MODE.NORMAL);
-    this.overlay.getCommandline()?.clear();
-  }
-
-  _updateCommandDisplay() {
-    const cmdline = this.overlay.getCommandline();
-    if (cmdline) {
-      cmdline.showCommand(this._cmdPrefix, this._cmdBuffer);
-    }
+    this.overlay.getCommandline()?.deactivate();
   }
 
   _executeCommand(cmd) {
@@ -536,7 +527,7 @@ export class VimKeybindings {
     }
   }
 
-  _enterVideoMode(videoElement) {
+  enterVideoMode(videoElement) {
     const player = new VideoAsciiPlayer(videoElement);
     this.mode = MODE.VIDEO;
     this.overlay.getStatusline()?.setMode(MODE.VIDEO);

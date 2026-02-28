@@ -56,6 +56,12 @@ async function activate() {
     keybindings.attach();
 
     overlay.render();
+
+    // Auto-enter video mode if a video is present
+    const videoBlock = blocks.find(b => b.type === 'video' && b.domElement);
+    if (videoBlock) {
+      keybindings.enterVideoMode(videoBlock.domElement);
+    }
   } catch (e) {
     console.error('[VimAscii] Error during activation:', e);
     overlay?.getCommandline()?.showMessage('Error: ' + e.message, true);
